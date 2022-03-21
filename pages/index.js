@@ -4,18 +4,20 @@ import Link from 'next/link';
 import React,{ useEffect, useState } from 'react'
 import styles from '../styles/Home.module.css'
 
-export default function Home() {
-  // Client-Side Rendering
-  const [pokemons, setPokemons] = useState([]);
-  useEffect(()=>{
-    async function getPokemon(){
-      const resp = await fetch(
-        'https://jherr-pokemon.s3.us-west-1.amazonaws.com/index.json'
-        );
-        setPokemons(await resp.json());
+
+export async function getServerSideProps(){
+  const resp = await fetch(
+    'https://jherr-pokemon.s3.us-west-1.amazonaws.com/index.json'
+    );
+    return {
+      props:{
+        pokemons: await resp.json(),
+      },
     }
-    getPokemon();
-  },[])
+}
+
+export default function Home({pokemons}) {
+
   return (
     <div className={styles.container}>
       <Head>
