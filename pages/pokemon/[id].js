@@ -3,7 +3,6 @@ import Head from 'next/head'
 import Link from 'next/link';
 import React from 'react'
 import styles from '../../styles/Details.module.css'
-import { useRouter } from "next/router"
 
 export default function Details({pokemon}){
 
@@ -54,7 +53,7 @@ export default function Details({pokemon}){
   )
 }
 // context !== params
-export async function getServerSideProps({params}){
+export async function getStaticProps({params}){
   const resp = await fetch(
     `https://jherr-pokemon.s3.us-west-1.amazonaws.com/pokemon/${params.id}.json`
     );
@@ -63,4 +62,18 @@ export async function getServerSideProps({params}){
         pokemon: await resp.json(),
       },
     }
+}
+
+export async function getStaticPaths(){
+  const resp = await fetch(
+    `https://jherr-pokemon.s3.us-west-1.amazonaws.com/index.json`
+    );
+    const pokemons =  await(resp.json());
+
+    return {
+      paths: pokemons.map((pokemon) => ({
+        params: {id: pokemon.id.toString()},
+      })),
+      fallback: false // pour ne pas avoir de page vide s'il y a pas de pokemon
+    };
 }
