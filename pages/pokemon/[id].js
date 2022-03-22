@@ -61,6 +61,7 @@ export async function getStaticProps({params}){
       props:{
         pokemon: await resp.json(),
       },
+      revalidate: 30, //la page se mettra à jour toutes les 30 secondes
     }
 }
 
